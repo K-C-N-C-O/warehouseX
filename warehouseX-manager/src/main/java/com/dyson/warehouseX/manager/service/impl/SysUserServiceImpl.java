@@ -2,17 +2,21 @@ package com.dyson.warehouseX.manager.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.dyson.model.dto.system.LoginDto;
+import com.dyson.model.dto.system.SysUserDto;
 import com.dyson.model.entity.system.SysUser;
 import com.dyson.model.vo.common.ResultCodeEnum;
 import com.dyson.model.vo.system.LoginVo;
 import com.dyson.warehouseX.common.exception.PException;
 import com.dyson.warehouseX.manager.mapper.SysUserMapper;
 import com.dyson.warehouseX.manager.service.SysUserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -72,5 +76,40 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout(String token) {
         redisTemplate.delete("user:login"+token);
+    }
+
+
+    //用户操作
+    @Override
+    public PageInfo<SysUser> findByPage(Integer pageNum, Integer pageSize, SysUserDto sysUserDto) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<SysUser> list=sysUserMapper.findByPage(sysUserDto);
+        PageInfo<SysUser> pageInfo=new PageInfo<>(list);
+        return null;
+    }
+
+    @Override
+    public void saveSysUser(SysUser sysUser) {
+        //判断用户名不能重复
+        String username=sysUser.getUserName();
+        SysUser dbSysUser = sysUserMapper.selectUserInfoByUserName(username);
+        if(dbSysUser!=null){
+            throw new PException(ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+        //输入密码加密
+        String md5_password=DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes());
+        sysUser.setPassword(md5_password);
+
+        sysUserMapper.save(sysUser);
+    }
+
+    @Override
+    public void updateSysUser(SysUser sysUser) {
+        sysUserMapper.update(sysUser);
+    }
+
+    @Override
+    public void deleteById(Long userId) {
+        sysUserMapper.delete(userId);
     }
 }
