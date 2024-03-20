@@ -21,74 +21,79 @@ import java.util.List;
 public class SysMenuServiceImpl implements SysMenuService {
 
     @Autowired
-    private SysMenuMapper sysMenuMapper;
+    private SysMenuMapper sysMenuMapper ;
 
     @Autowired
-    private  SysRoleMenuMapper sysRoleMenuMapper;
+    private SysRoleMenuMapper sysRoleMenuMapper;
+
+    //菜单列表
 
     @Override
     public List<SysMenu> findNodes() {
-        //查询所有菜单，返回list
-        List<SysMenu> sysMenuList=sysMenuMapper.findAll();
-        if(CollectionUtils.isEmpty(sysMenuList)){
+        //查询所有菜单数据,返回List集合
+        List<SysMenu> sysMenuList = sysMenuMapper.selectAll() ;
+        if (CollectionUtils.isEmpty(sysMenuList)){
             return null;
         }
-        //调用工具类，把返回list封装成要求的数据格式
-        List<SysMenu> treeList=MenuHelper.buildTree(sysMenuList);
+        //调用工具类的方法，将List集合封装为前端可以解析的数据
+        List<SysMenu> treeList = MenuHelper.buildTree(sysMenuList); //构建树形数据
         return treeList;
-
     }
+
+    //菜单添加
 
     @Override
     public void save(SysMenu sysMenu) {
-
-        sysMenuMapper.save(sysMenu);
-
-        //新添加子菜单，将父菜单isHalf设为半开状态1
-        updateSysRoleMenu(sysMenu);
+        sysMenuMapper.insert(sysMenu);
+        //新添加子菜单，需要把父菜单变为半开状态1
+        updateSysRoleMenu(sysMenu) ;
     }
 
     private void updateSysRoleMenu(SysMenu sysMenu) {
-        //获取父菜单
-        SysMenu parentMenu=sysMenuMapper.selectParentMenu(sysMenu.getParentId());
-        if(parentMenu!=null){
-            //is_half=1
-            sysRoleMenuMapper.updateSysRoleMenuIsHalf(parentMenu.getId());
+
+        // 查询是否存在父节点
+        SysMenu parentMenu = sysMenuMapper.selectParentMenu(sysMenu.getParentId());
+
+        if(parentMenu != null) {
+            // 将父菜单 ishalf 值设置为半开 1
+            sysRoleMenuMapper.updateSysRoleMenuIsHalf(parentMenu.getId()) ;
             // 递归调用
-            updateSysRoleMenu(parentMenu);
+            updateSysRoleMenu(parentMenu) ;
         }
 
-
     }
+
+    //菜单修改
 
     @Override
-    public void update(SysMenu sysMenu) {
-        sysMenuMapper.update(sysMenu);
+    public void updateById(SysMenu sysMenu) {
+        sysMenuMapper.updateById(sysMenu) ;
     }
+
+    //菜单删除
 
     @Override
     public void removeById(Long id) {
-        // 先查询是否存在子菜单，如果存在不允许进行删除
-        int count = sysMenuMapper.selectCountById(id);
+        int count = sysMenuMapper.countByParentId(id);  // 先查询是否存在子菜单，如果存在不允许进行删除
         if (count > 0) {
             throw new PException(ResultCodeEnum.NODE_ERROR);
         }
-        sysMenuMapper.delete(id);
+        sysMenuMapper.deleteById(id);		// 不存在子菜单直接删除
     }
 
-
-    //查询用户可以操作的菜单
+    //查看用户可以操纵的菜单
     @Override
-    public List<SysMenuVo> findMenusByUserId() {
-        //获取当前登录用户id
-        SysUser sysUser=AuthContextUtil.get();
-        Long userId=sysUser.getId();
-        //根据用户id查询可以操作菜单
-        List<SysMenu> list=sysMenuMapper.findMenusByUserId(userId);
-        //封装
-        List<SysMenu> sysMenuList = MenuHelper.buildTree(list);
-        List<SysMenuVo> sysMenuVos=this.buildMenus(sysMenuList);
-        return sysMenuVos;
+    public List<SysMenuVo> findUserMenuList() {
+        // 获取当前登录用户的id
+        SysUser sysUser = AuthContextUtil.get();
+        Long userId = sysUser.getId();
+
+        // 根据id查询可以操作的菜单
+        List<SysMenu> sysMenuList = sysMenuMapper.selectListByUserId(userId) ;
+
+        //封装要求数据格式，构建树形数据
+        List<SysMenu> sysMenuTreeList = MenuHelper.buildTree(sysMenuList);
+        return this.buildMenus(sysMenuTreeList);
     }
 
     // 将List<SysMenu>对象转换成List<SysMenuVo>对象

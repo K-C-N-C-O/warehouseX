@@ -7,18 +7,18 @@ import java.util.List;
 
 @Mapper
 public interface SysMenuMapper {
+    List<SysMenu> selectAll();
 
-    List<SysMenu> findAll();
+    void insert(SysMenu sysMenu);
 
-    void save(SysMenu sysMenu);
+    void updateById(SysMenu sysMenu);
 
-    void update(SysMenu sysMenu);
+    public abstract int countByParentId(Long id);
 
-    int selectCountById(Long id);
+    public abstract void deleteById(Long id);
 
-    void delete(Long id);
+    List<SysMenu> selectListByUserId(Long userId);
 
-    List<SysMenu> findMenusByUserId(Long userId);
-
+    // 查询是否存在父节点
     SysMenu selectParentMenu(Long parentId);
 }

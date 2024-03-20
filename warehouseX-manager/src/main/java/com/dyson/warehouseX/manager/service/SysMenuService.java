@@ -7,11 +7,12 @@ import java.util.List;
 
 public interface SysMenuService {
     List<SysMenu> findNodes();
+
     void save(SysMenu sysMenu);
 
-    void update(SysMenu sysMenu);
+    void updateById(SysMenu sysMenu);
 
     void removeById(Long id);
 
-    List<SysMenuVo> findMenusByUserId();
+    List<SysMenuVo> findUserMenuList();
 }

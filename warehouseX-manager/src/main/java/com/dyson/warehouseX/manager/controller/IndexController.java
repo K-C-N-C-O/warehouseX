@@ -56,9 +56,9 @@ public class IndexController {
     //查询用户可以操作的菜单
 
     @GetMapping("/menus")
-    public Result menus(){
-        List<SysMenuVo> list=sysMenuService.findMenusByUserId();
-        return Result.build(list,ResultCodeEnum.SUCCESS);
+    public Result menus() {
+        List<SysMenuVo> sysMenuVoList =  sysMenuService.findUserMenuList() ;
+        return Result.build(sysMenuVoList , ResultCodeEnum.SUCCESS) ;
     }
 
 }
