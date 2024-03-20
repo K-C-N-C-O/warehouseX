@@ -1,5 +1,6 @@
 package com.dyson.warehouseX.manager.controller;
 
+import com.dyson.model.dto.system.AssignRoleDto;
 import com.dyson.model.dto.system.SysUserDto;
 import com.dyson.model.entity.system.SysUser;
 import com.dyson.model.vo.common.Result;
@@ -20,8 +21,8 @@ public class SysUserController {
     @GetMapping(value = "findByPage/{pageNum}/{pageSize}")
     public Result findByPage(@PathVariable Integer pageNum,
                              @PathVariable Integer pageSize,
-                             SysUserDto sysUserDto){
-        PageInfo<SysUser> pageInfo=sysUserService.findByPage(pageNum,pageSize,sysUserDto);
+                             SysUserDto sysUserDto) {
+        PageInfo<SysUser> pageInfo = sysUserService.findByPage(pageNum, pageSize, sysUserDto);
         return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
 
 
@@ -29,27 +30,32 @@ public class SysUserController {
 
     //用户添加
     @PostMapping(value = "/saveSysUser")
-    public  Result saveSysUser(@RequestBody SysUser sysUser){
+    public Result saveSysUser(@RequestBody SysUser sysUser) {
         sysUserService.saveSysUser(sysUser);
-        return  Result.build(null,ResultCodeEnum.SUCCESS);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
 
     //用户修改
     @PutMapping(value = "/updateSysUser")
-    public  Result updateSysUser(@RequestBody SysUser sysUser){
+    public Result updateSysUser(@RequestBody SysUser sysUser) {
         sysUserService.updateSysUser(sysUser);
-        return  Result.build(null,ResultCodeEnum.SUCCESS);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
     //用户删除
-    @DeleteMapping(value ="/deleteById/{userId}")
-    public Result deleteById(@PathVariable("userId") Long userId){
+    @DeleteMapping(value = "/deleteById/{userId}")
+    public Result deleteById(@PathVariable("userId") Long userId) {
         sysUserService.deleteById(userId);
-        return  Result.build(null,ResultCodeEnum.SUCCESS);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
-
+    //用户分配角色
+    @PostMapping(value = "/doAssign")
+    public Result doAssign(@RequestBody AssignRoleDto assignRoleDto) {
+        sysUserService.doAssign(assignRoleDto);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
 
 
 }

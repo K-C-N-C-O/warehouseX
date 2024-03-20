@@ -1,12 +1,14 @@
 package com.dyson.warehouseX.manager.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.dyson.model.dto.system.AssignRoleDto;
 import com.dyson.model.dto.system.LoginDto;
 import com.dyson.model.dto.system.SysUserDto;
 import com.dyson.model.entity.system.SysUser;
 import com.dyson.model.vo.common.ResultCodeEnum;
 import com.dyson.model.vo.system.LoginVo;
 import com.dyson.warehouseX.common.exception.PException;
+import com.dyson.warehouseX.manager.mapper.SysRoleUserMapper;
 import com.dyson.warehouseX.manager.mapper.SysUserMapper;
 import com.dyson.warehouseX.manager.service.SysUserService;
 import com.github.pagehelper.PageHelper;
@@ -26,6 +28,9 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private SysRoleUserMapper sysRoleUserMapper;
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
@@ -99,6 +104,8 @@ public class SysUserServiceImpl implements SysUserService {
         //输入密码加密
         String md5_password=DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes());
         sysUser.setPassword(md5_password);
+        //设置status值
+        sysUser.setStatus(1);
 
         sysUserMapper.save(sysUser);
     }
@@ -111,5 +118,23 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void deleteById(Long userId) {
         sysUserMapper.delete(userId);
+    }
+
+
+
+    //用户分配角色
+    @Override
+    public void doAssign(AssignRoleDto assignRoleDto) {
+        //1 根据userID删除用户之前分配的角色数据
+        sysRoleUserMapper.deleteByUserId(assignRoleDto.getUserId());
+
+        //2 重新分配新的数据
+        List<Long> roleIdList=assignRoleDto.getRoleIdList();
+        for(Long roleId:roleIdList){
+            sysRoleUserMapper.doAssign(assignRoleDto.getUserId(),roleId);
+        }
+
+
+
     }
 }

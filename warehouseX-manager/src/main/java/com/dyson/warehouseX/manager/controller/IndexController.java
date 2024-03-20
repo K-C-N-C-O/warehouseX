@@ -2,14 +2,19 @@ package com.dyson.warehouseX.manager.controller;
 
 
 import com.dyson.model.dto.system.LoginDto;
+import com.dyson.model.entity.system.SysMenu;
 import com.dyson.model.entity.system.SysUser;
 import com.dyson.model.vo.common.Result;
 import com.dyson.model.vo.common.ResultCodeEnum;
 import com.dyson.model.vo.system.LoginVo;
+import com.dyson.model.vo.system.SysMenuVo;
+import com.dyson.warehouseX.manager.service.SysMenuService;
 import com.dyson.warehouseX.manager.service.SysUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,6 +23,9 @@ public class IndexController {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private SysMenuService sysMenuService;
 
     //用户退出
     @GetMapping(value = "/logout")
@@ -42,6 +50,15 @@ public class IndexController {
     public Result login(@RequestBody LoginDto loginDto){
         LoginVo loginVo=sysUserService.login(loginDto);
         return  Result.build(loginVo, ResultCodeEnum.SUCCESS);
+    }
+
+    //////////////////////////////////
+    //查询用户可以操作的菜单
+
+    @GetMapping("/menus")
+    public Result menus(){
+        List<SysMenuVo> list=sysMenuService.findMenusByUserId();
+        return Result.build(list,ResultCodeEnum.SUCCESS);
     }
 
 }

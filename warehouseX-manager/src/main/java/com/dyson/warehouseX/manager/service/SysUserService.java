@@ -1,5 +1,6 @@
 package com.dyson.warehouseX.manager.service;
 
+import com.dyson.model.dto.system.AssignRoleDto;
 import com.dyson.model.dto.system.LoginDto;
 import com.dyson.model.dto.system.SysUserDto;
 import com.dyson.model.entity.system.SysUser;
@@ -23,4 +24,6 @@ public interface SysUserService {
     void updateSysUser(SysUser sysUser);
 
     void deleteById(Long userId);
+
+    void doAssign(AssignRoleDto assignRoleDto);
 }
