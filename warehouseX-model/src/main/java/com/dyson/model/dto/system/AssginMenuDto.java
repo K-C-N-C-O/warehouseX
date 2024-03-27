@@ -10,7 +10,7 @@ import java.util.Map;
 @Schema(description = "请求参数实体类")
 public class AssginMenuDto {
 
-    @Schema(description = "角色id")
+    @Schema(description = "职位id")
     private Long roleId;			// 角色id
 
     @Schema(description = "选中的菜单id的集合")

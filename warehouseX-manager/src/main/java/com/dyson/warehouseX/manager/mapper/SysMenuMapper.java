@@ -13,9 +13,9 @@ public interface SysMenuMapper {
 
     void updateById(SysMenu sysMenu);
 
-    public abstract int countByParentId(Long id);
+    int countByParentId(Long id);
 
-    public abstract void deleteById(Long id);
+    void deleteById(Long id);
 
     List<SysMenu> selectListByUserId(Long userId);
 

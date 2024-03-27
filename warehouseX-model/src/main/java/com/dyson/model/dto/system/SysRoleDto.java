@@ -7,7 +7,7 @@ import lombok.Data;
 @Schema(description = "请求参数实体类")
 public class SysRoleDto {
 
-    @Schema(description = "角色名称")
+    @Schema(description = "职位名称")
     private String roleName ;
 
 }

@@ -13,9 +13,6 @@ public class Category extends BaseEntity {
 	@Schema(description = "分类名称")
 	private String name;
 
-	@Schema(description = "分类图片url")
-	private String imageUrl;
-
 	@Schema(description = "父节点id")
 	private Long parentId;
 

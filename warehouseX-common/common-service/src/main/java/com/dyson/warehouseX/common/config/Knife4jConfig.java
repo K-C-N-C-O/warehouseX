@@ -18,9 +18,7 @@ public class Knife4jConfig {
                 .build();
     }
 
-    /***
-     * @description 自定义接口信息
-     */
+    //自定义接口信息
     @Bean
     public OpenAPI customOpenAPI() {
 

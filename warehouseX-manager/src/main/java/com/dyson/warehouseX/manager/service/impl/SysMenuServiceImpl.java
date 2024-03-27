@@ -99,7 +99,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     // 将List<SysMenu>对象转换成List<SysMenuVo>对象
     private List<SysMenuVo> buildMenus(List<SysMenu> menus) {
 
-        List<SysMenuVo> sysMenuVoList = new LinkedList<SysMenuVo>();
+        List<SysMenuVo> sysMenuVoList = new LinkedList<>();
         for (SysMenu sysMenu : menus) {
             SysMenuVo sysMenuVo = new SysMenuVo();
             sysMenuVo.setTitle(sysMenu.getTitle());

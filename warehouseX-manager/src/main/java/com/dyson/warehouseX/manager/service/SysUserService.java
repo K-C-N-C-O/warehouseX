@@ -15,7 +15,6 @@ public interface SysUserService {
 
     void logout(String token);
 
-
     //用户操作
     PageInfo<SysUser> findByPage(Integer pageNum, Integer pageSize, SysUserDto sysUserDto);
 
